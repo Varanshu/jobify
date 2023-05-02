@@ -2,20 +2,21 @@ import React, { useState } from 'react'
 import Wrapper from '../assets/wrappers/RegisterPage'
 
 import { Logo, FormRow, Alert } from '../components'
+import { useAppContext } from '../hooks'
+
+const initialState = {
+    name: '',
+    email: '',
+    password: '',
+    isMember: true,
+    showAlert: true
+}
 
 const Register = () => {
 
-    const initialState = {
-        name: '',
-        email: '',
-        password: '',
-        isMember: true,
-        showAlert: true
-    }
-
-
-
     const [values, setValues] = useState(initialState)
+
+    const { isLoading, showAlert, displayAlert } = useAppContext()
 
     const toggleMember = () => {
         setValues({
@@ -25,19 +26,28 @@ const Register = () => {
     }
 
     const handleChange = e => {
-
+        setValues({
+            ...values,
+            [e.target.name]: e.target.value
+        })
     }
 
     const submitHandler = e => {
         e.preventDefault()
+        const { name, email, password, isMember } = values
+        if (!email || !password || (!isMember && !name)) {
+            displayAlert()
+            return
+        }
+        console.log(values);
     }
 
     return (
         <Wrapper className='full-page'>
-            <form className='form'>
+            <form className='form' onSubmit={submitHandler}>
                 <Logo />
                 <h3>{values.isMember ? 'Register' : 'Login'}</h3>
-                {values.showAlert && <Alert text="Alert" />}
+                {showAlert && <Alert />}
                 {
                     values.isMember
                     && <FormRow
@@ -59,8 +69,7 @@ const Register = () => {
                     type="password"
                     value={values.password}
                     handleChange={handleChange}
-                    labelText="Password"
-                    name="pwd"
+                    name="password"
                 />
                 <button className='btn btn-block'>Submit</button>
                 <p>

@@ -1,11 +1,13 @@
 import React from 'react'
+import { useAppContext } from '../hooks'
 
-const Alert = ({
-    text
-}) => {
+const Alert = () => {
+
+    const { alertType, alertText } = useAppContext()
+
     return (
-        <div className='alert alert-danger'>
-            {text}
+        <div className={`alert alert-${alertType}`}>
+            {alertText}
         </div>
     )
 }
